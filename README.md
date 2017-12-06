@@ -16,4 +16,8 @@ $ scrapy crawl chamber_of_deputies_sessions
 $ cd ..
 ```
 
-The files will be downloaded to `data/sources`.
+The files will be downloaded to `data/sources`. To extract them to `data/sessions`:
+
+```console
+$ python3 src/extract_content_files.py
+```
