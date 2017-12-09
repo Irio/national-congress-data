@@ -31,9 +31,9 @@ content_files += glob.glob(pattern.lower(), recursive=False)
 
 import pathlib
 
-pathlib.Path('data/sessions').mkdir(parents=True, exist_ok=True)
+pathlib.Path('data/sources/sessions').mkdir(parents=True, exist_ok=True)
 
 for filepath in content_files:
     filename = filepath.split('/')[-1]
-    copy(filepath, 'data/sessions/{}'.format(filename))
+    copy(filepath, 'data/sources/sessions/{}'.format(filename))
 rmtree(temp_folder)
