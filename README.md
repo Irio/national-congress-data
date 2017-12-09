@@ -8,9 +8,10 @@ $ pip3 install -r requirements.txt
 
 ## Data collection
 
-To download the sources from Chamber of Deputies website, use Scrapy's `crawl` command:
+To download the sources from Chamber of Deputies website, use `src/fetch_*.py` scripts and Scrapy's `crawl` commands:
 
 ```console
+$ python3 src/fetch_propositions.py
 $ cd data_collection
 $ scrapy crawl chamber_of_deputies_sessions
 $ cd ..
