@@ -1,1 +1,4 @@
+numpy==1.13.3
+requests==2.18.4
 scrapy==1.4.0
+xmltodict==0.11.0
