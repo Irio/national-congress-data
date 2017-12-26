@@ -13,7 +13,8 @@ To download the sources from Chamber of Deputies website, use `src/fetch_*.py` s
 ```console
 $ python3 src/fetch_propositions.py
 $ cd data_collection
-$ scrapy crawl chamber_of_deputies_sessions
+$ scrapy crawl chamber_of_deputies_sessions \
+  --output ../data/sources/sessions.csv
 $ cd ..
 ```
 

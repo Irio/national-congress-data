@@ -1,7 +1,8 @@
 import glob
 import os
-from shutil import copy, copytree, rmtree
-from tempfile import mktemp
+import pandas as pd
+from shutil import copy, rmtree
+from tempfile import mkdtemp
 from zipfile import ZipFile
 
 def unzip_and_delete(zip_paths, destination_folder):
@@ -12,28 +13,38 @@ def unzip_and_delete(zip_paths, destination_folder):
         os.remove(path)
 
 def zip_filepaths(folder):
-    pattern = '{}/*.zip'.format(temp_folder)
+    pattern = '{}/*.zip'.format(folder)
     return glob.glob(pattern, recursive=False)
 
-temp_folder = '{}/sources'.format(mktemp())
-copytree('data/sources/full', temp_folder)
 
-paths = zip_filepaths(temp_folder)
-while True:
-    unzip_and_delete(paths, temp_folder)
+session_files = pd.read_csv('data/sources/sessions.csv')
+for _, row in session_files.iterrows():
+    file_paths = [file['path'] for file in eval(row.files)]
+    temp_folder = mkdtemp()
+    for filepath in file_paths:
+        copy('data/sources/{}'.format(filepath), temp_folder)
+
     paths = zip_filepaths(temp_folder)
-    if not paths:
-        break
+    while True:
+        unzip_and_delete(paths, temp_folder)
+        paths = zip_filepaths(temp_folder)
+        if not paths:
+            break
 
-pattern = '{}/**.TXT'.format(temp_folder)
-content_files = glob.glob(pattern, recursive=False)
-content_files += glob.glob(pattern.lower(), recursive=False)
+    pattern = '{}/**.TXT'.format(temp_folder)
+    content_files = glob.glob(pattern, recursive=False)
+    content_files += glob.glob(pattern.lower(), recursive=False)
+    pattern = '{}/**/*.TXT'.format(temp_folder)
+    content_files += glob.glob(pattern, recursive=False)
+    content_files += glob.glob(pattern.lower(), recursive=False)
+    content_files = list(set(content_files))
 
-import pathlib
+    import pathlib
 
-pathlib.Path('data/sources/sessions').mkdir(parents=True, exist_ok=True)
+    path = 'data/sources/sessions/{}'.format(row['term'])
+    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
-for filepath in content_files:
-    filename = filepath.split('/')[-1]
-    copy(filepath, 'data/sources/sessions/{}'.format(filename))
-rmtree(temp_folder)
+    for filepath in content_files:
+        filename = filepath.split('/')[-1]
+        copy(filepath, '{}/{}'.format(path, filename))
+    rmtree(temp_folder)

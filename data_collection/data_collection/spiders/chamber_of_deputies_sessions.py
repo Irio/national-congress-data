@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import re
+
 import scrapy
 from scrapy import Request
 from scrapy.http import FormRequest
@@ -29,10 +31,12 @@ class ChamberOfDeputiesSessionsSpider(scrapy.Spider):
             yield scrapy.Request(url, callback=self.parse_download_page)
 
     def parse_download_page(self, response):
+        term = response.css('b::text').extract_first()
+        term = re.findall('\d{4}', term)[0]
         files = response.css('[name="liste1"] option::attr("value")').extract()
         urls = []
         for filename in files:
             url = response.url.split('/')
             url[-1] = filename
             urls.append('/'.join(url))
-        return Session(file_urls=urls)
+        return Session(file_urls=urls, term=term)

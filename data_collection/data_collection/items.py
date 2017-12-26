@@ -13,3 +13,4 @@ class ChamberOfDeputiesSession(scrapy.Item):
     # name = scrapy.Field()
     file_urls = scrapy.Field()
     files = scrapy.Field()
+    term = scrapy.Field()
